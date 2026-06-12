@@ -8,7 +8,10 @@ export default async function ProductsPage() {
   if (!userId) redirect("/")
 
   await connectDB()
-  const products = await Product.find().sort({ createdAt: -1 }).lean()
+  const raw = await Product.find().sort({ createdAt: -1 }).lean()
+  const products = JSON.parse(JSON.stringify(raw)) as Array<{
+    _id: string; name: string; price: number; category: string; description?: string; image?: string
+  }>
 
   return (
     <div className="min-h-screen bg-gray-50">

@@ -2,10 +2,14 @@ import mongoose from "mongoose"
 
 const MONGODB_URI = process.env.MONGODB_URI!
 
-let cached = globalThis._mongooseCache || { conn: null, promise: null }
+declare global {
+  var _mongooseCache: { conn: typeof mongoose | null; promise: Promise<typeof mongoose> | null }
+}
 
-if (!globalThis._mongooseCache) {
-  globalThis._mongooseCache = cached
+let cached: { conn: typeof mongoose | null; promise: Promise<typeof mongoose> | null } = globalThis._mongooseCache
+
+if (!cached) {
+  cached = globalThis._mongooseCache = { conn: null, promise: null }
 }
 
 export async function connectDB() {
